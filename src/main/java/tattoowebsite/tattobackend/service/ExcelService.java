@@ -182,32 +182,65 @@ public void deleteComment(Long id) throws IOException {
 
 
 
-    public void deleteAcceptedComment(Long id) throws IOException {
-        // Verificar e criar a aba "AcceptedComments" se não existir
-        createSheetIfNotExists("AcceptedComments");
+public void deleteAcceptedComment(Long id) throws IOException {
+    System.out.println("Deleting accepted comment with ID: " + id);
 
-        List<List<Object>> values = sheetsService.spreadsheets().values()
-                .get(SPREADSHEET_ID, ACCEPTED_COMMENTS_RANGE).execute().getValues();
-        int rowIndex = -1;
+    // Obter a planilha para verificar o ID da aba
+    Spreadsheet spreadsheet = sheetsService.spreadsheets().get(SPREADSHEET_ID).execute();
+    Sheet sheet = spreadsheet.getSheets().stream()
+            .filter(s -> s.getProperties().getTitle().equals("AcceptedComments"))
+            .findFirst()
+            .orElseThrow(() -> new IllegalStateException("Aba 'AcceptedComments' não encontrada"));
+
+    int sheetId = sheet.getProperties().getSheetId();
+    System.out.println("Sheet ID for 'AcceptedComments': " + sheetId);
+
+    List<List<Object>> values = sheetsService.spreadsheets().values()
+            .get(SPREADSHEET_ID, ACCEPTED_COMMENTS_RANGE).execute().getValues();
+    int rowIndex = -1;
+    if (values != null) {
         for (int i = 0; i < values.size(); i++) {
-            if (values.get(i).get(0).equals(id.toString())) {
+            if (values.get(i).get(0).toString().equals(id.toString())) {
                 rowIndex = i;
                 break;
             }
         }
-        if (rowIndex != -1) {
-            List<Request> requests = new ArrayList<>();
-            requests.add(new Request()
-                    .setDeleteDimension(new DeleteDimensionRequest()
-                            .setRange(new DimensionRange()
-                                    .setSheetId(0)
-                                    .setDimension("ROWS")
-                                    .setStartIndex(rowIndex)
-                                    .setEndIndex(rowIndex + 1))));
-            BatchUpdateSpreadsheetRequest body = new BatchUpdateSpreadsheetRequest().setRequests(requests);
-            sheetsService.spreadsheets().batchUpdate(SPREADSHEET_ID, body).execute();
-        }
     }
+
+    if (rowIndex != -1) {
+        List<Request> requests = new ArrayList<>();
+        requests.add(new Request()
+                .setDeleteDimension(new DeleteDimensionRequest()
+                        .setRange(new DimensionRange()
+                                .setSheetId(sheetId) // Usando o ID da aba dinâmico
+                                .setDimension("ROWS")
+                                .setStartIndex(rowIndex)
+                                .setEndIndex(rowIndex + 1))));
+        BatchUpdateSpreadsheetRequest body = new BatchUpdateSpreadsheetRequest().setRequests(requests);
+        BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(SPREADSHEET_ID, body).execute();
+
+        // Adicionar logs detalhados da resposta
+        System.out.println("Batch update response: " + response.toString());
+
+        // Verificar se a linha realmente foi removida
+        values = sheetsService.spreadsheets().values()
+                .get(SPREADSHEET_ID, ACCEPTED_COMMENTS_RANGE).execute().getValues();
+        if (values != null) {
+            boolean rowStillExists = values.stream()
+                    .anyMatch(row -> row.get(0).toString().equals(id.toString()));
+            if (rowStillExists) {
+                System.out.println("Failed to delete row with ID: " + id);
+            } else {
+                System.out.println("Successfully deleted row with ID: " + id);
+            }
+        } else {
+            System.out.println("Failed to retrieve values after deletion to confirm removal.");
+        }
+    } else {
+        System.out.println("Row with ID " + id + " not found.");
+    }
+}
+
 
     private void createSheetIfNotExists(String sheetName) throws IOException {
         Spreadsheet spreadsheet = sheetsService.spreadsheets().get(SPREADSHEET_ID).execute();
