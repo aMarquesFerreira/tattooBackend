@@ -1,0 +1,13 @@
+tattoowebsite\tattobackend\config\GoogleSheetsConfig.class
+tattoowebsite\tattobackend\service\AcceptedCommentService.class
+tattoowebsite\tattobackend\controller\AcceptedCommentController.class
+tattoowebsite\tattobackend\model\AcceptedComment.class
+tattoowebsite\tattobackend\config\CorsConfig.class
+tattoowebsite\tattobackend\repository\CommentRepository.class
+tattoowebsite\tattobackend\service\CommentService.class
+tattoowebsite\tattobackend\service\ExcelService.class
+tattoowebsite\tattobackend\model\Comment.class
+tattoowebsite\tattobackend\TattoBackendApplication.class
+tattoowebsite\tattobackend\controller\CommentController.class
+tattoowebsite\tattobackend\repository\AcceptedCommentRepository.class
+tattoowebsite\tattobackend\config\CorsConfig$1.class
