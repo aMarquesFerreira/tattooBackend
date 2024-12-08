@@ -23,7 +23,11 @@ public class CorsConfig implements WebMvcConfigurer {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://127.0.0.1:5500", "http://localhost:4200") // Permite ambas as origens
+                        .allowedOrigins(
+                            "http://127.0.0.1:5500", 
+                            "http://localhost:4200", 
+                            "https://joyful-gingersnap-aaf202.netlify.app" // Adicionado o domínio do Netlify
+                        )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
