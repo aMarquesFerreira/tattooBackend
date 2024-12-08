@@ -25,6 +25,9 @@ public class GoogleSheetsConfig {
             throw new IllegalStateException("Variável de ambiente GOOGLE_CREDENTIALS não configurada ou vazia.");
         }
 
+        // Adicione este log para verificar se o JSON está sendo carregado corretamente
+        System.out.println("Credenciais lidas: " + credentialsJson);
+
         // Converte o JSON de credenciais em um stream
         GoogleCredential credential = GoogleCredential.fromStream(
                 new ByteArrayInputStream(credentialsJson.getBytes()))
