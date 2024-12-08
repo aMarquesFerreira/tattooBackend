@@ -21,9 +21,13 @@ public class GoogleSheetsConfig {
     public Sheets sheetsService() throws IOException, GeneralSecurityException {
         // Lê o JSON de credenciais da variável de ambiente
         String credentialsJson = System.getenv("GOOGLE_CREDENTIALS");
+        System.out.println("Iniciando configuração do Google Sheets.");
+        System.out.println("Verificando variável GOOGLE_CREDENTIALS...");
         if (credentialsJson == null || credentialsJson.isEmpty()) {
+            System.out.println("Erro: Variável GOOGLE_CREDENTIALS não está configurada ou está vazia.");
             throw new IllegalStateException("Variável de ambiente GOOGLE_CREDENTIALS não configurada ou vazia.");
         }
+        System.out.println("Credenciais carregadas com sucesso.");
 
         // Adicione este log para verificar se o JSON está sendo carregado corretamente
         System.out.println("Credenciais lidas: " + credentialsJson);
