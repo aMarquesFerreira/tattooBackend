@@ -26,7 +26,8 @@ public class CorsConfig implements WebMvcConfigurer {
                         .allowedOrigins(
                             "http://127.0.0.1:5500", 
                             "http://localhost:4200", 
-                            "https://joyful-gingersnap-aaf202.netlify.app" // Adicionado o domínio do Netlify
+                            "https://joyful-gingersnap-aaf202.netlify.app", // Adicionado o domínio do Netlify
+                            "https://nimble-halva-862edc.netlify.app"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
